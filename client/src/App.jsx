@@ -30,9 +30,9 @@ import AddressRequest from './pages/employee/AddressRequest';
 function AppLayout() {
   const { user } = useAuth();
   return (
-    <div className={`app-layout ${user ? 'with-sidebar' : ''}`}>
+    <div className="flex h-screen w-screen overflow-hidden bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
       {user && <Sidebar />}
-      <main className="main-content">
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Navigate to="/login" />} />
@@ -58,8 +58,8 @@ function AppLayout() {
           <Route path="/employee/attendance" element={<ProtectedRoute roles={['employee']}><Attendance /></ProtectedRoute>} />
           <Route path="/employee/address" element={<ProtectedRoute roles={['employee']}><AddressRequest /></ProtectedRoute>} />
         </Routes>
-      </main>
-      <ToastContainer position="top-right" autoClose={3000} theme="dark" />
+      </div>
+      <ToastContainer position="top-right" autoClose={3000} theme="light" />
     </div>
   );
 }

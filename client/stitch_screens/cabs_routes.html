@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CabFlow - Cabs &amp; Routes</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3b3bed",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#111121",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-tab {
+            border-bottom: 3px solid #3b3bed;
+            color: #3b3bed;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="w-72 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between p-6">
+<div class="flex flex-col gap-8">
+<!-- Brand -->
+<div class="flex items-center gap-3">
+<div class="bg-primary size-10 rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">local_taxi</span>
+</div>
+<div class="flex flex-col">
+<h1 class="text-slate-900 dark:text-white text-lg font-bold leading-tight">CabFlow Admin</h1>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">Fleet Management</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-sm font-semibold">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/10 text-primary" href="#">
+<span class="material-symbols-outlined">route</span>
+<span class="text-sm font-semibold">Cabs &amp; Routes</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-sm font-semibold">Drivers</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="text-sm font-semibold">Earnings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-sm font-semibold">Settings</span>
+</a>
+</nav>
+</div>
+<button class="w-full bg-gradient-to-r from-primary to-blue-600 text-white rounded-xl py-3 px-4 flex items-center justify-center gap-2 font-bold shadow-lg shadow-primary/20 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-xl">add_circle</span>
+<span>Add New Entry</span>
+</button>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-8">
+<header class="mb-8">
+<h2 class="text-4xl font-black text-slate-900 dark:text-white tracking-tight">Cabs &amp; Routes</h2>
+<p class="text-slate-500 dark:text-slate-400 mt-2">Manage your fleet and active service routes</p>
+</header>
+<!-- Tabs Navigation -->
+<div class="flex border-b border-slate-200 dark:border-slate-800 mb-6">
+<button class="px-6 py-4 text-sm font-bold active-tab flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">minor_crash</span>
+                Cab Fleet
+            </button>
+<button class="px-6 py-4 text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors border-b-[3px] border-transparent flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">alt_route</span>
+                Routes
+            </button>
+</div>
+<!-- Search and Filter -->
+<div class="flex gap-4 mb-6">
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+<input class="w-full pl-12 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all text-slate-900 dark:text-white" placeholder="Search plate number, driver, or route..." type="text"/>
+</div>
+<button class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+<!-- Table Container -->
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50 dark:bg-slate-800/50">
+<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Plate No</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Model</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Driver</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Status</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-5 font-mono font-medium text-slate-900 dark:text-white text-sm">TX-9920</td>
+<td class="px-6 py-5 text-sm text-slate-600 dark:text-slate-400">Toyota Camry (2023)</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Portrait of John Doe" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2RN3t2Rpg4QBZCSEizxUMaJDFr4LMd3aYpbFyWGFlEoAc2J-n8m7onmler1ANybCMrXUbFKNtJ0BMkUPhC0M38KkNFwat_nVULENd1wfC3wVhtySddcuz1ubvpV7Pk2zf1c9rqmPwdHHbA8OW47qi7u03p9VYCvZHAp8FxQHdZC95lcxu_n5UuP_hFnw-BqPe5NjREXyRI9wGyxkL0VqioK3vwy2517SkdM-jMSdZVoVys5oJsyI98lcEC8n43cMfNgBZj7F2TvFJ"/>
+</div>
+<span class="text-sm font-medium text-slate-900 dark:text-white">John Doe</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                                Active
+                            </span>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-5 font-mono font-medium text-slate-900 dark:text-white text-sm">BK-4412</td>
+<td class="px-6 py-5 text-sm text-slate-600 dark:text-slate-400">Honda Civic (2022)</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Portrait of Jane Smith" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAbSnNNcjiwz9DWr0aXVDlfLezftEx8cgU-qWzXXKhxpfdQerI64f5hBzwEbj7coC6_jim-7556Zs0irfOeRF_zANTLTDeo86HD9TRswrPu0htjlaHnWXdsZyC-g0jHjWiUPXJGpNhn8LEhbbMIxT0f4xUaqV1quvTDkce0iZcxGQgbw-EjkxV3miRZ0Jkk3EpgVy4lGZ9KRR0AcscfXJlP7gUj0EAzj4d9iuT_f0639Oqj-eTbkbbnTAZpPKTNKUg15z7wG5MHHzH"/>
+</div>
+<span class="text-sm font-medium text-slate-900 dark:text-white">Jane Smith</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                                In Service
+                            </span>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-5 font-mono font-medium text-slate-900 dark:text-white text-sm">LM-1029</td>
+<td class="px-6 py-5 text-sm text-slate-600 dark:text-slate-400">Tesla Model 3 (2024)</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Portrait of Robert Brown" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfJTBHqFHF92CYbxY0xhM_X_1PXLngHJbNyEnNBokjjoCpeACoQzbIoSsqiuXiZyi5kYQ9ZuXGQOryWS36G_ShB1TSv4kl-VX7D8SQWpbq6UDaBUItXhkq0BAf_kxKQwExiajFkjFt56MQcGeMPDKl2Sarw6HxAJiiqz5razBX2lsFbpkRVkBIXvbPk4Ebu_6mKacxgO-DgVsg6rkYeppNn12uoBBDCf-WnzB6_K8bVug5vQm8jJ55nBzZ9K2lwa1W7Wu-eszS_Nwr"/>
+</div>
+<span class="text-sm font-medium text-slate-900 dark:text-white">Robert Brown</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+                                Inactive
+                            </span>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Section: Routes View Preview (Alternate Tab State) -->
+<div class="mt-12 hidden">
+<!-- This section represents the Routes tab content -->
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50 dark:bg-slate-800/50">
+<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Route Name</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Start Point</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">End Point</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Assigned Cabs</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+<tr>
+<td class="px-6 py-5 font-bold text-slate-900 dark:text-white text-sm">Downtown Express</td>
+<td class="px-6 py-5 text-sm text-slate-600 dark:text-slate-400">Central Station</td>
+<td class="px-6 py-5 text-sm text-slate-600 dark:text-slate-400">Business District</td>
+<td class="px-6 py-5">
+<div class="flex -space-x-2">
+<div class="size-8 rounded-full bg-primary flex items-center justify-center text-[10px] text-white font-bold border-2 border-white dark:border-slate-900">TX</div>
+<div class="size-8 rounded-full bg-primary flex items-center justify-center text-[10px] text-white font-bold border-2 border-white dark:border-slate-900">BK</div>
+<div class="size-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[10px] text-slate-500 font-bold border-2 border-white dark:border-slate-900">+2</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</main>
+</div>
+</body></html>
