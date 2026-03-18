@@ -19,6 +19,7 @@ import AttendanceView from './pages/admin/AttendanceView';
 import DriverDashboard from './pages/driver/Dashboard';
 import ShiftSelection from './pages/driver/ShiftSelection';
 import Manifest from './pages/driver/Manifest';
+import Notifications from './pages/driver/Notifications';
 
 // Employee
 import EmployeeDashboard from './pages/employee/Dashboard';
@@ -50,6 +51,7 @@ function AppLayout() {
           <Route path="/driver" element={<ProtectedRoute roles={['driver']}><DriverDashboard /></ProtectedRoute>} />
           <Route path="/driver/shifts" element={<ProtectedRoute roles={['driver']}><ShiftSelection /></ProtectedRoute>} />
           <Route path="/driver/manifest" element={<ProtectedRoute roles={['driver']}><Manifest /></ProtectedRoute>} />
+          <Route path="/driver/notifications" element={<ProtectedRoute roles={['driver']}><Notifications /></ProtectedRoute>} />
 
           {/* Employee Routes */}
           <Route path="/employee" element={<ProtectedRoute roles={['employee']}><EmployeeDashboard /></ProtectedRoute>} />

@@ -133,30 +133,30 @@ router.put('/manifest/reorder', async (req, res) => {
   }
 });
 
-// GET /api/driver/cancellations — today's unacknowledged cancellations
-router.get('/cancellations', async (req, res) => {
+// GET /api/driver/notifications
+router.get('/notifications', async (req, res) => {
   try {
-    const cab = await Cab.findOne({ driver: req.user._id });
-    if (!cab) return res.json([]);
-
-    const today = new Date().toISOString().split('T')[0];
-    const cancellations = await Cancellation.find({
-      employee: { $in: cab.employees },
-      date: today,
-      acknowledged: false,
-    }).populate('employee', 'name phone');
-
-    res.json(cancellations);
+    const notifications = await Cancellation.find({ driver: req.user._id })
+      .populate('employee', 'name phone residentialAddress')
+      .sort({ createdAt: -1 });
+    res.json(notifications);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
-// PUT /api/driver/cancellations/:id/acknowledge
-router.put('/cancellations/:id/acknowledge', async (req, res) => {
+// PUT /api/driver/notifications/:id/acknowledge
+router.put('/notifications/:id/acknowledge', async (req, res) => {
   try {
-    await Cancellation.findByIdAndUpdate(req.params.id, { acknowledged: true });
-    res.json({ message: 'Acknowledged' });
+    const notification = await Cancellation.findById(req.params.id);
+    if (!notification) return res.status(404).json({ message: 'Not found' });
+    if (notification.driver.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
+    
+    notification.acknowledged = true;
+    await notification.save();
+    res.json(notification);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }

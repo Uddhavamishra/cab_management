@@ -62,21 +62,28 @@ router.post('/cancel', async (req, res) => {
     const [startH, startM] = shift.startTime.split(':').map(Number);
     const [endH, endM] = shift.endTime.split(':').map(Number);
 
-    let checkTime;
-    if (type === 'pickup') {
-      checkTime = new Date(now);
-      checkTime.setHours(startH, startM, 0, 0);
-    } else {
-      checkTime = new Date(now);
-      checkTime.setHours(endH, endM, 0, 0);
+    let pickupTime = new Date(now);
+    pickupTime.setHours(startH, startM, 0, 0);
+    
+    let dropoffTime = new Date(pickupTime);
+    dropoffTime.setHours(endH, endM, 0, 0);
+    
+    if (endH < startH) {
+      dropoffTime.setDate(dropoffTime.getDate() + 1);
+    }
+    
+    if (endH < startH && now.getHours() < endH) {
+      pickupTime.setDate(pickupTime.getDate() - 1);
+      dropoffTime.setDate(dropoffTime.getDate() - 1);
     }
 
+    const checkTime = type === 'pickup' ? pickupTime : dropoffTime;
     const diffMs = checkTime.getTime() - now.getTime();
     const diffHours = diffMs / (1000 * 60 * 60);
 
     if (diffHours < 2) {
       return res.status(400).json({
-        message: `Cannot cancel ${type}. Must be at least 2 hours before ${type === 'pickup' ? 'shift start' : 'shift end'}.`,
+        message: `Cannot cancel ${type}. Must be at least 2 hours before ${type === 'pickup' ? 'shift start (' + shift.startTime + ')' : 'shift end (' + shift.endTime + ')'}.`,
       });
     }
 
@@ -93,6 +100,7 @@ router.post('/cancel', async (req, res) => {
     const cancellation = await Cancellation.create({
       employee: req.user._id,
       shift: shift._id,
+      driver: cab.driver,
       type,
       date: today,
     });

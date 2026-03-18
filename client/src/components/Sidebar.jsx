@@ -15,6 +15,7 @@ const driverLinks = [
   { to: '/driver', label: 'Dashboard', icon: 'dashboard' },
   { to: '/driver/shifts', label: 'Shift Selection', icon: 'schedule' },
   { to: '/driver/manifest', label: 'Passenger Manifest', icon: 'receipt_long' },
+  { to: '/driver/notifications', label: 'Notifications', icon: 'notifications' },
 ];
 
 const employeeLinks = [
