@@ -16,67 +16,77 @@ export default function CabInfo() {
     fetchCab();
   }, []);
 
-  if (loading) return <div className="page"><div className="spinner" /></div>;
+  if (loading) return (
+    <div className="flex-1 flex items-center justify-center">
+      <div className="w-10 h-10 border-4 border-slate-200 border-t-primary rounded-full animate-spin"></div>
+    </div>
+  );
 
   if (!cabInfo) {
     return (
-      <div className="page">
-        <h1 className="page-title">Cab Information</h1>
-        <div className="empty-state">
-          <span className="empty-icon">🚕</span>
-          <p>You haven&apos;t been assigned to a cab yet</p>
+      <div className="flex-1 overflow-y-auto p-8 max-w-7xl mx-auto w-full">
+        <header className="mb-8">
+          <h1 className="text-2xl font-bold text-slate-800 dark:text-white">Cab Information</h1>
+        </header>
+        <div className="flex flex-col items-center justify-center p-12 text-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl">
+          <span className="material-symbols-outlined text-5xl text-slate-300 mb-4">local_taxi</span>
+          <p className="text-slate-500 font-medium">You haven&apos;t been assigned to a cab yet</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="page">
-      <h1 className="page-title">Cab Information</h1>
-      <p className="page-subtitle">Your assigned cab and co-passenger details</p>
+    <div className="flex-1 overflow-y-auto p-8 max-w-7xl mx-auto w-full">
+      <header className="mb-8">
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-white">Cab Information</h1>
+        <p className="text-slate-500 text-sm">Your assigned cab and co-passenger details</p>
+      </header>
 
-      <div className="cards-grid">
-        <div className="card info-card">
-          <div className="info-card-header">
-            <span className="info-card-icon">🚗</span>
-            <h3>Driver Details</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm">
+          <div className="flex items-center gap-3 mb-6">
+            <span className="material-symbols-outlined text-2xl text-primary bg-primary/10 p-2 rounded-lg">person</span>
+            <h3 className="font-bold text-lg text-slate-800 dark:text-white">Driver Details</h3>
           </div>
-          <div className="info-rows">
-            <div className="info-row"><span className="info-label">Name</span><span className="info-value">{cabInfo.driver?.name || '—'}</span></div>
-            <div className="info-row"><span className="info-label">Phone</span><span className="info-value">{cabInfo.driver?.phone || '—'}</span></div>
-            <div className="info-row"><span className="info-label">Vehicle</span><span className="info-value">{cabInfo.vehicleNumber}</span></div>
+          <div className="space-y-4 text-sm">
+            <div className="flex justify-between border-b border-slate-100 dark:border-slate-800 pb-3"><span className="text-slate-500 font-medium">Name</span><span className="font-bold text-slate-800 dark:text-white">{cabInfo.driver?.name || '—'}</span></div>
+            <div className="flex justify-between border-b border-slate-100 dark:border-slate-800 pb-3"><span className="text-slate-500 font-medium">Phone</span><span className="font-bold text-slate-800 dark:text-white">{cabInfo.driver?.phone || '—'}</span></div>
+            <div className="flex justify-between"><span className="text-slate-500 font-medium">Vehicle</span><span className="font-bold uppercase tracking-wider text-slate-800 dark:text-white">{cabInfo.vehicleNumber}</span></div>
           </div>
         </div>
 
-        <div className="card info-card">
-          <div className="info-card-header">
-            <span className="info-card-icon">🏢</span>
-            <h3>Office</h3>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm">
+          <div className="flex items-center gap-3 mb-6">
+            <span className="material-symbols-outlined text-2xl text-teal-500 bg-teal-50 p-2 rounded-lg">corporate_fare</span>
+            <h3 className="font-bold text-lg text-slate-800 dark:text-white">Office</h3>
           </div>
-          <div className="info-rows">
-            <div className="info-row"><span className="info-label">Name</span><span className="info-value">{cabInfo.office?.name || '—'}</span></div>
-            <div className="info-row"><span className="info-label">Address</span><span className="info-value">{cabInfo.office?.address || '—'}</span></div>
+          <div className="space-y-4 text-sm">
+            <div className="flex justify-between border-b border-slate-100 dark:border-slate-800 pb-3"><span className="text-slate-500 font-medium">Name</span><span className="font-bold text-slate-800 dark:text-white">{cabInfo.office?.name || '—'}</span></div>
+            <div className="flex justify-between"><span className="text-slate-500 font-medium">Address</span><span className="font-bold text-right max-w-[60%] text-slate-800 dark:text-white">{cabInfo.office?.address || '—'}</span></div>
           </div>
         </div>
       </div>
 
-      <div className="section">
-        <h2 className="section-title">Co-passengers ({cabInfo.coPassengers?.length || 0})</h2>
+      <div className="mb-8">
+        <h2 className="text-lg font-bold text-slate-800 dark:text-white mb-4">Co-passengers ({cabInfo.coPassengers?.length || 0})</h2>
         {cabInfo.coPassengers?.length > 0 ? (
-          <div className="cards-grid">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {cabInfo.coPassengers.map((p) => (
-              <div key={p._id} className="card info-card compact">
-                <div className="info-card-header">
-                  <span className="info-card-icon">👩</span>
-                  <h3>{p.name}</h3>
+              <div key={p._id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex items-center gap-4 shadow-sm">
+                <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 font-bold">
+                  {p.name.charAt(0).toUpperCase()}
                 </div>
-                <p className="info-card-detail">📞 {p.phone || 'N/A'}</p>
+                <div>
+                  <h3 className="font-bold text-sm text-slate-800 dark:text-white">{p.name}</h3>
+                  <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5"><span className="material-symbols-outlined text-[14px]">call</span> {p.phone || 'N/A'}</p>
+                </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="empty-state small">
-            <p>No co-passengers assigned</p>
+          <div className="p-6 text-center border border-dashed border-slate-300 rounded-xl text-slate-500 text-sm font-medium">
+            No co-passengers assigned
           </div>
         )}
       </div>

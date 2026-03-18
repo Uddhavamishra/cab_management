@@ -28,36 +28,42 @@ export default function ShiftSelection() {
   };
 
   return (
-    <div className="page">
-      <h1 className="page-title">Shift Selection</h1>
-      <p className="page-subtitle">Choose your preferred shift</p>
+    <div className="flex-1 overflow-y-auto p-8 max-w-7xl mx-auto w-full">
+      <header className="mb-8">
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-white">Shift Selection</h1>
+        <p className="text-slate-500 text-sm">Choose your preferred shift for today</p>
+      </header>
 
       {selectedShift && (
-        <div className="card current-shift-card">
-          <h3>Current Shift</h3>
-          <div className="shift-times">
-            <span className="time-badge large">{selectedShift.startTime}</span>
-            <span className="shift-arrow">→</span>
-            <span className="time-badge large">{selectedShift.endTime}</span>
+        <div className="mb-8 bg-primary/5 border border-primary/20 rounded-xl p-6">
+          <h3 className="text-sm font-bold text-primary uppercase tracking-wider mb-4">Current Shift</h3>
+          <div className="flex items-center gap-4 mb-2">
+            <span className="px-3 py-1 bg-white dark:bg-slate-800 rounded shadow-sm text-lg font-bold text-slate-700 dark:text-slate-200">{selectedShift.startTime}</span>
+            <span className="material-symbols-outlined text-slate-400">arrow_forward</span>
+            <span className="px-3 py-1 bg-white dark:bg-slate-800 rounded shadow-sm text-lg font-bold text-slate-700 dark:text-slate-200">{selectedShift.endTime}</span>
           </div>
-          <p className="shift-office">{selectedShift.office?.name || ''} {selectedShift.label ? `• ${selectedShift.label}` : ''}</p>
+          <p className="text-slate-600 dark:text-slate-400 font-medium">
+            {selectedShift.office?.name || ''} {selectedShift.label ? `• ${selectedShift.label}` : ''}
+          </p>
         </div>
       )}
 
-      <div className="cards-grid">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {shifts.map((shift) => (
-          <div key={shift._id} className={`card shift-card ${selectedShift?._id === shift._id ? 'selected' : ''}`}>
-            <div className="shift-times">
-              <span className="time-badge">{shift.startTime}</span>
-              <span className="shift-arrow">→</span>
-              <span className="time-badge">{shift.endTime}</span>
+          <div key={shift._id} className={`bg-white dark:bg-slate-900 border rounded-xl p-6 flex flex-col ${selectedShift?._id === shift._id ? 'border-primary ring-2 ring-primary/20' : 'border-slate-200 dark:border-slate-800'}`}>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded text-sm font-bold text-slate-700 dark:text-slate-300">{shift.startTime}</span>
+                <span className="text-slate-400 text-xs">→</span>
+                <span className="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded text-sm font-bold text-slate-700 dark:text-slate-300">{shift.endTime}</span>
+              </div>
             </div>
-            <p className="shift-label">{shift.label || 'Unnamed Shift'}</p>
-            <p className="shift-office">{shift.office?.name || ''}</p>
+            <p className="font-bold text-slate-800 dark:text-white mb-1">{shift.label || 'Unnamed Shift'}</p>
+            <p className="text-sm text-slate-500 mb-6 flex-1">{shift.office?.name || ''}</p>
             <button
-              className={`btn btn-full ${selectedShift?._id === shift._id ? 'btn-outline' : 'btn-primary'}`}
               onClick={() => handleSelect(shift._id)}
               disabled={selectedShift?._id === shift._id}
+              className={`w-full py-2.5 rounded-lg font-bold text-sm transition-colors ${selectedShift?._id === shift._id ? 'bg-slate-50 text-primary border border-primary/30 cursor-not-allowed' : 'bg-primary text-white hover:bg-primary-dark shadow-sm'}`}
             >
               {selectedShift?._id === shift._id ? 'Selected ✓' : 'Select Shift'}
             </button>
@@ -66,9 +72,9 @@ export default function ShiftSelection() {
       </div>
 
       {shifts.length === 0 && (
-        <div className="empty-state">
-          <span className="empty-icon">🕐</span>
-          <p>No shifts available for your office</p>
+        <div className="flex flex-col items-center justify-center p-12 text-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl">
+          <span className="material-symbols-outlined text-5xl text-slate-300 mb-4">schedule</span>
+          <p className="text-slate-500 font-medium">No shifts available for your office</p>
         </div>
       )}
     </div>
