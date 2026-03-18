@@ -4,19 +4,27 @@ import { toast } from 'react-toastify';
 
 export default function UserManagement() {
   const [users, setUsers] = useState([]);
+  const [shifts, setShifts] = useState([]);
+  const [offices, setOffices] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
-  const [form, setForm] = useState({ username: '', password: '', role: 'employee', name: '', phone: '', vehicleNumber: '', residentialAddress: '' });
+  const [form, setForm] = useState({ username: '', password: '', role: 'employee', name: '', phone: '', vehicleNumber: '', residentialAddress: '', selectedShift: '', assignedOffice: '' });
   const [resetPw, setResetPw] = useState({ userId: null, newPassword: '' });
 
-  const fetchUsers = async () => {
+  const fetchData = async () => {
     try {
-      const res = await api.get('/admin/users');
-      setUsers(res.data);
-    } catch (err) { toast.error('Failed to fetch users'); }
+      const [usersRes, shiftsRes, officesRes] = await Promise.all([
+        api.get('/admin/users'),
+        api.get('/admin/shifts'),
+        api.get('/admin/offices')
+      ]);
+      setUsers(usersRes.data);
+      setShifts(shiftsRes.data);
+      setOffices(officesRes.data);
+    } catch (err) { toast.error('Failed to fetch data'); }
   };
 
-  useEffect(() => { fetchUsers(); }, []);
+  useEffect(() => { fetchData(); }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,14 +38,14 @@ export default function UserManagement() {
       }
       setShowForm(false);
       setEditingUser(null);
-      setForm({ username: '', password: '', role: 'employee', name: '', phone: '', vehicleNumber: '', residentialAddress: '' });
-      fetchUsers();
+      setForm({ username: '', password: '', role: 'employee', name: '', phone: '', vehicleNumber: '', residentialAddress: '', selectedShift: '', assignedOffice: '' });
+      fetchData();
     } catch (err) { toast.error(err.response?.data?.message || 'Failed'); }
   };
 
   const handleEdit = (user) => {
     setEditingUser(user);
-    setForm({ username: user.username, password: '', role: user.role, name: user.name, phone: user.phone || '', vehicleNumber: user.vehicleNumber || '', residentialAddress: user.residentialAddress || '' });
+    setForm({ username: user.username, password: '', role: user.role, name: user.name, phone: user.phone || '', vehicleNumber: user.vehicleNumber || '', residentialAddress: user.residentialAddress || '', selectedShift: user.selectedShift?._id || '', assignedOffice: user.assignedOffice?._id || '' });
     setShowForm(true);
   };
 
@@ -46,7 +54,7 @@ export default function UserManagement() {
     try {
       await api.delete(`/admin/users/${id}`);
       toast.success('User deleted');
-      fetchUsers();
+      fetchData();
     } catch (err) { toast.error('Delete failed'); }
   };
 
@@ -64,7 +72,7 @@ export default function UserManagement() {
         <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">User Management</h2>
         <button 
           className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-primary to-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:opacity-90 transition-all"
-          onClick={() => { setShowForm(!showForm); setEditingUser(null); setForm({ username: '', password: '', role: 'employee', name: '', phone: '', vehicleNumber: '', residentialAddress: '' }); }}
+          onClick={() => { setShowForm(!showForm); setEditingUser(null); setForm({ username: '', password: '', role: 'employee', name: '', phone: '', vehicleNumber: '', residentialAddress: '', selectedShift: '', assignedOffice: '' }); }}
         >
           <span className="material-symbols-outlined text-[20px]">{showForm ? 'close' : 'add'}</span>
           <span>{showForm ? 'Cancel' : 'Add New User'}</span>
@@ -110,10 +118,26 @@ export default function UserManagement() {
                   </div>
                 )}
                 {form.role === 'employee' && (
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Residential Address</label>
-                    <input className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary shadow-sm" value={form.residentialAddress} onChange={(e) => setForm({ ...form, residentialAddress: e.target.value })} />
-                  </div>
+                  <>
+                    <div>
+                      <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Residential Address</label>
+                      <input className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary shadow-sm" value={form.residentialAddress} onChange={(e) => setForm({ ...form, residentialAddress: e.target.value })} />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Assign Shift</label>
+                      <select className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary shadow-sm" value={form.selectedShift} onChange={(e) => setForm({ ...form, selectedShift: e.target.value })}>
+                        <option value="">-- No Shift assigned --</option>
+                        {shifts.map(s => <option key={s._id} value={s._id}>{s.label || `${s.startTime}-${s.endTime}`} ({s.office?.name})</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Assign Office</label>
+                      <select className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary shadow-sm" value={form.assignedOffice} onChange={(e) => setForm({ ...form, assignedOffice: e.target.value })}>
+                        <option value="">-- No Office assigned --</option>
+                        {offices.map(o => <option key={o._id} value={o._id}>{o.name}</option>)}
+                      </select>
+                    </div>
+                  </>
                 )}
               </div>
               <button type="submit" className="px-6 py-2 bg-primary text-white font-bold rounded-lg hover:opacity-90 transition-opacity">{editingUser ? 'Update' : 'Create'}</button>

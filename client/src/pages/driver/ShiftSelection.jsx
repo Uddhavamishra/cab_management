@@ -60,6 +60,21 @@ export default function ShiftSelection() {
             </div>
             <p className="font-bold text-slate-800 dark:text-white mb-1">{shift.label || 'Unnamed Shift'}</p>
             <p className="text-sm text-slate-500 mb-6 flex-1">{shift.office?.name || ''}</p>
+            
+            {shift.assignedEmployees && shift.assignedEmployees.length > 0 && (
+              <div className="mb-4">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Assigned Employees:</p>
+                <div className="text-sm text-slate-600 dark:text-slate-400 space-y-1">
+                  {shift.assignedEmployees.map(emp => (
+                    <div key={emp._id} className="flex justify-between items-center bg-slate-50 dark:bg-slate-800/50 px-3 py-1.5 rounded-md border border-slate-100 dark:border-slate-800">
+                      <span className="font-medium text-slate-700 dark:text-slate-300 text-xs">{emp.name}</span>
+                      <span className="text-[10px] opacity-70 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">{emp.phone || 'No phone'}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            
             <button
               onClick={() => handleSelect(shift._id)}
               disabled={selectedShift?._id === shift._id}

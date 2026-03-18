@@ -20,7 +20,8 @@ router.get('/users', async (req, res) => {
     const users = await User.find(filter)
       .select('-password')
       .populate('assignedOffice')
-      .populate('assignedCab');
+      .populate('assignedCab')
+      .populate('selectedShift');
     res.json(users);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -30,7 +31,7 @@ router.get('/users', async (req, res) => {
 // POST /api/admin/users
 router.post('/users', async (req, res) => {
   try {
-    const { username, password, role, name, phone, vehicleNumber, residentialAddress } = req.body;
+    const { username, password, role, name, phone, vehicleNumber, residentialAddress, selectedShift, assignedOffice } = req.body;
     if (!username || !password || !role || !name) {
       return res.status(400).json({ message: 'Username, password, role, and name are required' });
     }
@@ -44,6 +45,8 @@ router.post('/users', async (req, res) => {
       username, password, role, name, phone,
       vehicleNumber: role === 'driver' ? vehicleNumber : undefined,
       residentialAddress: role === 'employee' ? residentialAddress : undefined,
+      selectedShift: role === 'employee' ? selectedShift : undefined,
+      assignedOffice: role === 'employee' ? assignedOffice : undefined,
     });
 
     const userObj = user.toObject();
@@ -57,7 +60,7 @@ router.post('/users', async (req, res) => {
 // PUT /api/admin/users/:id
 router.put('/users/:id', async (req, res) => {
   try {
-    const { name, phone, vehicleNumber, residentialAddress, role } = req.body;
+    const { name, phone, vehicleNumber, residentialAddress, role, selectedShift, assignedOffice } = req.body;
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ message: 'User not found' });
 
@@ -66,6 +69,8 @@ router.put('/users/:id', async (req, res) => {
     if (vehicleNumber !== undefined) user.vehicleNumber = vehicleNumber;
     if (residentialAddress !== undefined) user.residentialAddress = residentialAddress;
     if (role) user.role = role;
+    if (selectedShift !== undefined) user.selectedShift = selectedShift || null;
+    if (assignedOffice !== undefined) user.assignedOffice = assignedOffice || null;
 
     await user.save();
     const userObj = user.toObject();

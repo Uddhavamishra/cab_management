@@ -16,21 +16,23 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Please provide username and password' });
     }
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username })
+      .populate('assignedOffice')
+      .populate('assignedCab')
+      .populate('selectedShift');
+      
     if (!user || !(await user.matchPassword(password))) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
     const token = generateToken(user._id, user.role);
+    
+    const userObj = user.toObject();
+    delete userObj.password;
+    
     res.json({
       token,
-      user: {
-        _id: user._id,
-        username: user.username,
-        name: user.name,
-        role: user.role,
-        phone: user.phone,
-      },
+      user: userObj,
     });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -43,7 +45,8 @@ router.get('/me', protect, async (req, res) => {
     const user = await User.findById(req.user._id)
       .select('-password')
       .populate('assignedOffice')
-      .populate('assignedCab');
+      .populate('assignedCab')
+      .populate('selectedShift');
     res.json(user);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });

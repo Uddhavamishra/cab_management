@@ -27,7 +27,7 @@ export default function EmployeeDashboard() {
         <h1 className="text-2xl font-bold text-slate-800 dark:text-white">Welcome, {user?.name}</h1>
         <p className="text-slate-500 text-sm">Your daily commute dashboard</p>
       </header>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 mb-8">
         <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm border-t-4 border-t-purple-500">
           <div className="flex items-center gap-4 mb-4">
             <span className="material-symbols-outlined text-purple-500 bg-purple-50 p-3 rounded-lg text-2xl">local_taxi</span>
@@ -55,6 +55,30 @@ export default function EmployeeDashboard() {
           </div>
           <p className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Today's Attendance</p>
           <h3 className="text-xl font-bold text-slate-800 dark:text-white mt-1">{attendance?.present ? 'Present' : 'Not Marked'}</h3>
+        </div>
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm border-t-4 border-t-indigo-500">
+          <div className="flex items-center gap-4 mb-4">
+            <span className="material-symbols-outlined text-indigo-500 bg-indigo-50 p-3 rounded-lg text-2xl">schedule</span>
+          </div>
+          <p className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Assigned Shift</p>
+          <h3 className="text-xl font-bold text-slate-800 dark:text-white mt-1 line-clamp-1">
+            {user?.selectedShift ? (user.selectedShift.label || `${user.selectedShift.startTime} - ${user.selectedShift.endTime}`) : '—'}
+          </h3>
+          {user?.selectedShift && (
+            <p className="text-xs text-slate-500 mt-2 font-medium">{user.selectedShift.startTime} to {user.selectedShift.endTime}</p>
+          )}
+        </div>
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm border-t-4 border-t-blue-500">
+          <div className="flex items-center gap-4 mb-4">
+            <span className="material-symbols-outlined text-blue-500 bg-blue-50 p-3 rounded-lg text-2xl">domain</span>
+          </div>
+          <p className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Assigned Office</p>
+          <h3 className="text-xl font-bold text-slate-800 dark:text-white mt-1 line-clamp-1">
+            {user?.assignedOffice ? user.assignedOffice.name : '—'}
+          </h3>
+          {user?.assignedOffice && (
+            <p className="text-xs text-slate-500 mt-2 font-medium truncate">{user.assignedOffice.address}</p>
+          )}
         </div>
       </div>
     </div>

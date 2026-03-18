@@ -25,7 +25,17 @@ router.get('/office', async (req, res) => {
 router.get('/shifts', async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
-    const shifts = await Shift.find({ office: user.assignedOffice }).populate('office');
+    const shiftsRaw = await Shift.find({ office: user.assignedOffice }).populate('office');
+    
+    const shifts = [];
+    for (let shift of shiftsRaw) {
+      const assignedEmployees = await User.find({ selectedShift: shift._id, role: 'employee' }).select('name phone residentialAddress');
+      shifts.push({
+        ...shift.toObject(),
+        assignedEmployees
+      });
+    }
+    
     res.json(shifts);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
